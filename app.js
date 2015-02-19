@@ -1,5 +1,5 @@
 // variable declarations
-var fs         = require('fs'),
+var     fs         = require('fs'),
 	http       = require('http'),
 	express    = require('express'),
 	bodyParser = require('body-parser'),
@@ -8,7 +8,8 @@ var fs         = require('fs'),
 	server     = http.createServer(app),
 	// Set your secret key: remember to change this to your live secret key in production
 	// See your keys here https://dashboard.stripe.com/account
-	stripe     = require("stripe")("");
+        secretKey = require('./secret_key'),
+	stripe     = require("stripe")(secretKey.key.secret);
 
 // for one time payments:
 function chargeCard(token, res){
