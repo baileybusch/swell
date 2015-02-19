@@ -8,7 +8,7 @@ var fs         = require('fs'),
 	server     = http.createServer(app),
 	// Set your secret key: remember to change this to your live secret key in production
 	// See your keys here https://dashboard.stripe.com/account
-	stripe     = require("stripe")("sk_test_cTcGfvRhAUPZ4wZvHoxSKjU0");
+	stripe     = require("stripe")("");
 
 // for one time payments:
 function chargeCard(token, res){
@@ -46,12 +46,14 @@ app.post('/charge', function (request, response) {
 	var stripeToken = request.body.stripeToken;
 	var stripeEmail = request.body.stripeEmail;
 
+	console.log(stripeToken);
+
 	var charge = stripe.charges.create({
   		amount: 1000, // amount in cents, again
   		currency: "usd",
   		card: stripeToken,
   		customer: stripeEmail,
-  		description: "payinguser@example.com"
+  		description: stripeEmail
 	}, function(err, charge) {
   		if (err && err.type === 'StripeCardError') {
     	// The card has been declined
@@ -60,7 +62,6 @@ app.post('/charge', function (request, response) {
 	
 	// handle unexpected missing input:
 	if (!request.body || !request.body.stripeToken) return response.send({ok: false, message: 'error'});
-	chargeCard(request.body.token, response);
-	// alternatively, you could subscribeUser(request.body.token, response);
+	chargeCard(request.body.stripeToken, response);
+	// alternatively, you could subscribeUser(request.body.token, response)
 });
-
